@@ -23,12 +23,27 @@ jobs:
           script_options: "-o StrictHostKeyChecking=no" 
           # ---------------------------
           script: |
-            # Navigate to the correct directory
+            echo "--- STARTING DEPLOYMENT SCRIPT ---"
+
+            # 1. Navigate and print location
             cd /var/www/html/
+            echo "Current Directory: $(pwd)"
+            
+            # 2. Print existing files BEFORE PULL
+            echo "Files BEFORE Pull:"
+            ls -l index.html
 
-            # Fetch and merge using the PAT token for authentication
-            # NOTE: We are now referencing the new PAT_TOKEN secret
-            sudo git pull https://${{ secrets.PAT_TOKEN }}@github.com/ranacse/azure-demo-site.git main
+            # 3. Force Pull the changes from GitHub
+            # This discards local changes and forces an update.
+            sudo git fetch origin
+            sudo git reset --hard origin/main
+            
+            # 4. Print file date AFTER PULL
+            echo "Files AFTER Pull:"
+            ls -l index.html
 
-            # Set permissions for web server
+            # 5. Set permissions and restart web server
             sudo chown -R www-data:www-data /var/www/html/
+            sudo systemctl restart apache2
+            
+            echo "--- DEPLOYMENT SCRIPT FINISHED ---"
