@@ -32,6 +32,3 @@ jobs:
 
             # Set permissions for web server
             sudo chown -R www-data:www-data /var/www/html/
-          
-            # Set permissions for web server (www-data)
-            sudo chown -R www-data:www-data /var/www/html/
