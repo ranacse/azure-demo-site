@@ -18,6 +18,10 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          # --- ADD THESE TWO LINES ---
+          agent_forwarding: true                     
+          script_options: "-o StrictHostKeyChecking=no" 
+          # ---------------------------
           script: |
             # Navigate to the correct directory where the repo was cloned
             cd /var/www/html/
