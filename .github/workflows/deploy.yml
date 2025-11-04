@@ -1,0 +1,29 @@
+name: Deploy Website to EC2
+
+on:
+  push:
+    branches:
+      - main # IMPORTANT: Change to 'master' if your main branch is named 'master'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set permissions and execute remote command
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            # Navigate to the correct directory where the repo was cloned
+            cd /var/www/html/
+
+            # Fetch and merge the latest changes from GitHub
+            sudo git pull origin main
+
+            # Set permissions for web server (www-data)
+            sudo chown -R www-data:www-data /var/www/html/
